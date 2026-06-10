@@ -1,0 +1,91 @@
+﻿Designation ,Experience ,,Description 
+ QA Analyst  ,2-4 Years,,
+,,AI Adoption & Responsible Usage (25%),
+,,,"Integrates Claude into test design, test-data generation, defect analysis and documentation"
+,,,
+,,,Measurable effort/TAT improvement with no drop in quality
+,,,
+,,,Validates and refines AI-generated test cases/scripts to meet QA standards
+,,,
+,,,"Effective prompting — provides context, iterates, reuses proven prompt patterns"
+,,,
+,,,Full compliance with usage policy; zero data-handling violations; no over-reliance
+,,,
+,,,Adopts new Claude features and shares learnings with the QA team
+,,,
+,,Test Design & Coverage (25%),
+,,,
+,,,Completeness of test cases
+,,,
+,,,Coverage against requirements ≥ 95%
+,,,
+,,,Risk-based testing approach
+,,,
+,,,Edge case identification
+,,,
+,,,Traceability (Requirement ↔ Test Case)
+,,,
+,,,Target: No major requirement gaps in testing.
+,,,
+,,,
+,,,
+,, Defect Quality & Analysis (20%),
+,,,
+,,,High defect detection efficiency
+,,,
+,,,Low duplicate/invalid defect %
+,,,
+,,,Clear defect documentation
+,,,
+,,,Proper severity classification
+,,,
+,,,Root cause trend analysis contribution
+,,,
+,,,
+,,,
+,,Release Quality & Stability (10%),
+,,,
+,,,Defect leakage ≤ 5–7%
+,,,
+,,,Regression completeness
+,,,
+,,,Participation in release readiness checks
+,,,
+,,,Production issue validation support
+,,,
+,,,
+,,,
+,, Automation Contribution (10%),
+,,,
+,,,Test automation coverage contribution
+,,,
+,,,Identifying candidates for automation
+,,,
+,,,Maintaining automated scripts
+,,,
+,,,CI/CD integration awareness
+,,,
+,,,
+,,,
+,, Process & Documentation (5%),
+,,,
+,,,Clear test strategy documentation
+,,,
+,,,Participation in sprint planning
+,,,
+,,,Risk communication during planning
+,,,
+,,,Following QA standards
+,,,
+,,,
+,,,
+,, Collaboration & Communication (5%),
+,,,
+,,,Works closely with SE-1/SE-2 developers
+,,,
+,,,Clarifies requirements proactively
+,,,
+,,,Participates in design discussions
+,,,
+,,,Provides constructive quality feedback
+,,,

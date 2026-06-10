@@ -1,0 +1,79 @@
+﻿Designation,Experience,,Description
+QA Lead,6+ Years,,
+,,AI Adoption & Responsible Usage (30%),
+,,,"Defines/owns QA AI usage guidelines, governance and data-security compliance"
+,,,Drives adoption — % of QA team actively & effectively using Claude; license utilisation
+,,,"Tracks and reports team-level AI productivity ROI (cycle-time, coverage, defect prevention)"
+,,,"Embeds AI into QA workflows & standards (test design, automation, defect analysis, docs)"
+,,,"Ensures responsible, secure and fair usage; zero data-handling violations across team"
+,,,"Upskills QA team on AI, mentors, and builds an experimentation/innovation culture"
+,,,Evaluates emerging AI/testing tools and recommends or pilots adoption
+,,Release Quality & Stability (20%),
+,,,
+,,,Defect leakage ≤ 3–5%
+,,,
+,,,Reduction in high-severity production issues
+,,,
+,,,Regression completeness ≥ 98%
+,,,
+,,,Release readiness accuracy
+,,,
+,,,Zero surprise critical defects post-release
+,,,
+,,,"Target: Stable, predictable releases."
+,,,
+,,QA Strategy & Governance (15%),
+,,,
+,,,Defined QA process & standards
+,,,
+,,,Risk-based test planning framework
+,,,
+,,,Test coverage across functional & non-functional areas
+,,,
+,,,Shift-left testing adoption
+,,,
+,,,Clear Definition of Done (DoD)
+,,Automation & Efficiency (15%),
+,,,
+,,,Automation coverage growth %
+,,,
+,,,CI/CD integration of test suites
+,,,
+,,,Reduction in manual regression time
+,,,
+,,,Flaky test reduction
+,,,
+,,,Automation ROI tracking
+,,,
+,,,
+,,,
+,,Defect Prevention & Quality Improvement (10%),
+,,,
+,,,Root cause analysis ownership
+,,,
+,,,Reduction of recurring defect patterns
+,,,
+,,,Quality trend dashboards
+,,,
+,,,Cross-team improvement initiatives
+,,,
+,,Team Leadership & Development (5%),
+,,,
+,,,QA team performance improvement
+,,,
+,,,Mentorship & skill development
+,,,
+,,,Hiring contribution
+,,,
+,,,Performance reviews & feedback
+,,,
+,,,Resource allocation effectiveness
+,,Cross-Functional Collaboration (5%),
+,,,
+,,,Alignment with Tech Lead & Engineering Manager
+,,,
+,,,Participation in sprint planning
+,,,
+,,,Risk communication before release
+,,,
+,,,Stakeholder quality reporting

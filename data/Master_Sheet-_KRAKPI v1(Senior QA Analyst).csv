@@ -1,0 +1,96 @@
+﻿Designation ,Experience ,,Description 
+ Senior QA Analyst  ,4-6 Years,,
+,,AI Adoption & Responsible Usage (30%),
+,,,Creates and shares reusable prompt patterns/templates for the QA team
+,,,
+,,,"Optimises AI usage for ROI — right task selection, efficient iteration"
+,,,
+,,,Reviews juniors' AI-assisted work; coaches on verification and responsible use
+,,,
+,,,"Identifies high-value QA use cases (test gen, analysis, automation assist) and pilots them"
+,,,
+,,,Champions fair-use and data-safety compliance within the QA team
+,,,
+,,,Evaluates and adopts new AI capabilities; runs knowledge-sharing sessions
+,,,
+,,Release Quality & Stability (20%),
+,,,
+,,,Defect leakage ≤ 3–5%
+,,,
+,,,High-severity defect prevention
+,,,
+,,,Regression completeness ≥ 98%
+,,,
+,,,Release readiness certification accuracy
+,,,
+,,,Production defect trend reduction
+,,,
+,,,Target: Minimal surprise production issues.
+,,,
+,,,
+,,,
+,,Test Strategy & Risk Management (15%),
+,,,
+,,,Risk-based test planning
+,,,
+,,,Requirement validation during grooming
+,,,
+,,,Coverage of edge & negative scenarios
+,,,
+,,,Early defect detection (shift-left testing)
+,,,
+,,,Impact analysis before release
+,,,
+,,,
+,,,
+,,Automation & Efficiency (10%),
+,,,
+,,,Automation coverage growth %
+,,,
+,,,CI/CD test integration
+,,,
+,,,Maintenance of test suites
+,,,
+,,,Reduction in manual regression time
+,,,
+,,,Identifying automation ROI
+,,,
+,,,
+,,,
+,,Defect Analysis & Prevention (10%),
+,,,
+,,,Root cause analysis participation
+,,,
+,,,Repeated defect pattern reduction
+,,,
+,,,Collaboration with SE-2 / Tech Lead
+,,,
+,,,Quality improvement recommendations
+,,,
+,,,Process improvement initiatives
+,,,
+,,,
+,,,
+,, QA Leadership & Mentorship (10%),Guides Junior QA & QA Analysts
+,,,
+,,,Reviews test cases
+,,,
+,,,Conducts knowledge sessions
+,,,
+,,,Supports hiring interviews
+,,,
+,,,Improves QA skill maturity
+,,,
+,,,
+,,,
+,,,
+,,,
+,, Process Governance & Documentation (5%),
+,,,
+,,,Defines QA standards
+,,,
+,,,Maintains traceability matrix
+,,,
+,,,Ensures compliance to release checklist
+,,,
+,,,Improves test documentation quality

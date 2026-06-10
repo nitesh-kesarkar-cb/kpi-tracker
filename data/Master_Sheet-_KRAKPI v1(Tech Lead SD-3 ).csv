@@ -1,0 +1,109 @@
+﻿Designation ,Experience ,,Description 
+Tech Lead/SD-3,6+ Years,,
+,,,
+,,AI Adoption & Responsible Usage (30%),
+,,,
+,,,"Defines/owns team AI usage guidelines, governance and data-security compliance"
+,,,
+,,,Drives adoption — % of team actively & effectively using Claude; license utilisation
+,,,
+,,,"Tracks and reports team-level AI productivity ROI (cycle-time, throughput, quality)"
+,,,
+,,,"Embeds AI into engineering workflows & standards (review, testing, docs, design exploration)"
+,,,
+,,,"Ensures responsible, secure and fair usage; zero data-handling violations across team"
+,,,
+,,,"Upskills team on AI, mentors, and builds an experimentation/innovation culture"
+,,,
+,,,Evaluates emerging AI tools/features and recommends or pilots adoption
+,,,
+,,Technical Architecture & Design (15%),
+,,,
+,,,Architecture scalability & maintainability
+,,,
+,,,Design review effectiveness
+,,,
+,,,Technical debt reduction
+,,,
+,,,Code standard enforcement
+,,,
+,,,System performance benchmarks
+,,,
+,,,Security best practices implementation
+,,,
+,,,Target: Minimal architecture rework & stable design decisions
+,,,
+,,,
+,,,
+,, Delivery & Sprint Predictability (15%),
+,,,
+,,,Team sprint commitment reliability
+,,,
+,,,Estimation accuracy at team level
+,,,
+,,,Dependency management efficiency
+,,,
+,,,Cross-team coordination success
+,,,
+,,,Feature rollout smoothness
+,,,
+,,,Target: ≥ 90% sprint predictability
+,,,
+,,,
+,,,
+,, Production Stability & Quality (15%),
+,,,
+,,,Production incident reduction
+,,,
+,,,Change failure rate
+,,,
+,,,Release stability score
+,,,
+,,,Root cause analysis effectiveness
+,,,
+,,,MTTR (Mean Time to Recovery)
+,,,
+,,,Aligned with DORA metrics.
+,,,
+,,,
+,,,
+,, Team Leadership & Mentorship (15%),
+,,,
+,,,Junior/Senior growth progression
+,,,
+,,,PR review quality
+,,,
+,,,Knowledge sharing sessions
+,,,
+,,,Conflict resolution
+,,,
+,,,Technical coaching effectiveness
+,,,
+,,,
+,,,
+,,Process & Engineering Excellence (5%),
+,,,
+,,,CI/CD improvements
+,,,
+,,,Automation coverage
+,,,
+,,,Code review turnaround time
+,,,
+,,,Documentation quality
+,,,
+,,,Branching & release discipline
+,,,
+,,,
+,,,
+,, Innovation & Strategic Contribution (5%),
+,,,
+,,,Introducing new tools/frameworks
+,,,
+,,,POC initiatives
+,,,
+,,,Cost optimization ideas
+,,,
+,,,Performance improvements
+,,,
+,,,Scalability planning
+,,,

@@ -1,0 +1,90 @@
+﻿Designation ,Experience ,,Description 
+Senior Software Engineer-2,4-6 Years,,
+,,AI Adoption & Responsible Usage (25%),
+,,,Creates and shares reusable prompt patterns/templates for the team
+,,,
+,,,"Optimises AI usage for ROI — right task selection, efficient & cost-aware iteration"
+,,,
+,,,Reviews juniors' AI-assisted code; coaches on verification and responsible use
+,,,
+,,,Identifies high-value use cases and pilots them; ensures AI-assisted output quality
+,,,
+,,,Champions fair-use and data-safety compliance within the squad
+,,,
+,,,Evaluates and adopts new AI capabilities; runs knowledge-sharing sessions
+,,,
+,,Technical Ownership & Delivery (25%),
+,,,
+,,,Sprint reliability ≥ 90%
+,,,
+,,,Owns module end-to-end
+,,,
+,,,Accurate estimations
+,,,
+,,,Handles cross-module dependencies
+,,,
+,,,Supports release readiness
+,,,
+,,,
+,,,
+,,Code Quality & Design (10%),
+,,,
+,,,Writes scalable & reusable components
+,,,
+,,,Reduces technical debt
+,,,
+,,,PR rework rate < 10%
+,,,
+,,,Guides coding standards
+,,,
+,,,Refactoring contribution
+,,,
+,,,
+,,,
+,, Production Stability (10%),
+,,,
+,,,Defect leakage ≤ 5–7%
+,,,
+,,,Handles production issues independently
+,,,
+,,,Improves monitoring/logging
+,,,
+,,,Reduces recurring bugs
+,,,
+,,,
+,,,
+,, Performance & Optimization (10%),
+,,,
+,,,API performance improvement
+,,,
+,,,Database query optimization
+,,,
+,,,Memory/CPU efficiency
+,,,
+,,,Load handling improvements
+,,,
+,,,(Important for backend-heavy systems.)
+,,,
+,,,
+,,,
+,, Mentorship & Team Impact (10%),
+,,,
+,,,Mentors SE-1 / Juniors
+,,,
+,,,Reviews PRs effectively
+,,,
+,,,Reduces team rework
+,,,
+,,,Participates in hiring interviews (technical round)
+,,,
+,,,
+,,,
+,,Process & Engineering Excellence (10%),
+,,,
+,,,Improves CI/CD practices
+,,,
+,,,Promotes automation
+,,,
+,,,Contributes to documentation
+,,,
+,,,Follows security best practices

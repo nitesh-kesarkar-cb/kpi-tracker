@@ -1,0 +1,113 @@
+﻿Designation ,Experience ,,Description 
+Engineering Manager,10+ Years,,
+,,,
+,,Delivery & Business Outcomes (26%),
+,,,
+,,,On-time project delivery %
+,,,
+,,,Roadmap execution success
+,,,
+,,,Budget adherence
+,,,
+,,,Revenue-impacting feature delivery
+,,,
+,,,Escalation reduction rate
+,,,
+,,,Stakeholder satisfaction score
+,,,
+,,,Target: ≥ 90% roadmap delivery success
+,,,
+,,,
+,,,
+,, Team Performance & Productivity (17%),
+,,,
+,,,Sprint predictability at org level
+,,,
+,,,Velocity stability trend
+,,,
+,,,Cross-team coordination effectiveness
+,,,
+,,,Workload balancing
+,,,
+,,,Reduction in bottlenecks
+,,,
+,,,
+,,,
+,,Quality & Engineering Excellence (13%),
+,,,
+,,,Production incident trend
+,,,
+,,,Change failure rate
+,,,
+,,,Defect leakage %
+,,,
+,,,Automation maturity
+,,,
+,,,Technical debt reduction roadmap
+,,,
+,,,Aligned with DORA metrics:
+,,,
+,,,Deployment frequency
+,,,
+,,,Lead time for changes
+,,,
+,,,MTTR
+,,,
+,,,Change failure rate
+,,,
+,,,
+,,,
+,, People Management & Retention (13%),
+,,,
+,,,Team retention rate
+,,,
+,,,Employee engagement score
+,,,
+,,,Career growth progression
+,,,
+,,,Performance review completion
+,,,
+,,,Conflict resolution effectiveness
+,,,
+,,,Target: ≥ 90% retention (excluding natural attrition)
+,,,
+,,,
+,,,
+,,Cost & Resource Optimization (8%),
+,,,Cloud cost optimization
+,,,
+,,,Infrastructure efficiency
+,,,
+,,,Vendor cost control
+,,,
+,,,Hiring efficiency (time-to-hire)
+,,,
+,,,
+,,,
+,,,
+,,Strategic & Leadership Contribution (8%),
+,,,Long-term architecture roadmap
+,,,
+,,,Risk mitigation planning
+,,,
+,,,Succession planning
+,,,
+,,,Hiring quality
+,,,
+,,,Leadership visibility & influence
+,,,
+,,AI Adoption & Responsible Usage (15%),
+,,,"Defines/owns team AI usage guidelines, governance and data-security compliance"
+,,,
+,,,Drives adoption — % of team actively & effectively using Claude; license utilisation
+,,,
+,,,"Tracks and reports team-level AI productivity ROI (cycle-time, throughput, quality)"
+,,,
+,,,"Embeds AI into engineering workflows & standards (review, testing, docs, design exploration)"
+,,,
+,,,"Ensures responsible, secure and fair usage; zero data-handling violations across team"
+,,,
+,,,"Upskills team on AI, mentors, and builds an experimentation/innovation culture"
+,,,
+,,,Evaluates emerging AI tools/features and recommends or pilots adoption
+,,,

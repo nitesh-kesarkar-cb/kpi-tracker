@@ -1,0 +1,92 @@
+﻿Designation ,Experience ,,Description 
+Junior QA  ,0-2,,
+,,AI Adoption & Responsible Usage (25%),
+,,,Uses Claude on assigned tasks; completed usage-guidelines & onboarding training
+,,,
+,,,Reviews and verifies AI-generated test cases/scripts before use (no blind trust)
+,,,
+,,,Can explain any AI-assisted test work submitted
+,,,
+,,,"No secrets, credentials or client/PII data ever entered into prompts"
+,,,
+,,,"Writes clear, context-rich prompts (basic prompt hygiene)"
+,,,
+,,,Shares useful prompts / learnings with the QA team
+,,,
+,,Test Execution & Coverage (25%),
+,,,
+,,,Test case execution completeness %
+,,,
+,,,Adherence to test plan timelines
+,,,
+,,,Regression cycle participation
+,,,
+,,,Accuracy in validating requirements
+,,,
+,,,No missed basic scenarios
+,,,
+,,,Target: ≥ 95% planned test execution coverage
+,,,
+,,,
+,,,
+,, Defect Identification & Reporting (20%),
+,,,
+,,,Bug detection rate
+,,,
+,,,"Clarity of bug reports (repro steps, logs, screenshots)"
+,,,
+,,,Proper severity & priority tagging
+,,,
+,,,Low duplicate defect rate
+,,,
+,,,Timely defect logging
+,,,
+,,,Target: High-quality bug reports with minimal clarification needed
+,,,
+,,,
+,,,
+,, Quality & Attention to Detail (10%),
+,,,
+,,,Edge case testing effort
+,,,
+,,,Requirement understanding
+,,,
+,,,Validation against acceptance criteria
+,,,
+,,,Retest accuracy after fixes
+,,,
+,,,
+,,,
+,,Process & Discipline (5%),
+,,,
+,,,Follows test documentation standards
+,,,
+,,,Proper test case documentation
+,,,
+,,,Uses defect tracking tools correctly
+,,,
+,,,Participates in daily standups
+,,,
+,,,
+,,,
+,, Learning & Growth (10%),
+,,,
+,,,Learns automation basics
+,,,
+,,,Improves domain knowledge
+,,,
+,,,Participates in knowledge sharing
+,,,
+,,,Certification or upskilling progress
+,,,
+,,,
+,,,
+,,Collaboration & Communication (5%),
+,,,
+,,,Clear communication with developers
+,,,
+,,,Participates in sprint planning
+,,,
+,,,Quick clarification seeking
+,,,
+,,,Professional behavior

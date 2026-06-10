@@ -1,0 +1,88 @@
+﻿Designation,Experience,,Description
+Junior Developer,0-2 Years,,
+,,AI Adoption & Responsible Usage (25%),
+,,,
+,,,Uses Claude on assigned tasks; completed usage-guidelines & onboarding training
+,,,
+,,,"Reviews, tests and understands all AI-generated code before commit (no blind copy-paste)"
+,,,
+,,,Can explain any AI-assisted code submitted
+,,,
+,,,"No secrets, credentials or client/PII data ever entered into prompts"
+,,,
+,,,"Writes clear, context-rich prompts (basic prompt hygiene)"
+,,,
+,,,Shares useful prompts / learnings with the team
+,,,
+,,,
+,,Delivery & Execution (25%),
+,,,Sprint commitment vs actual completion %
+,,,
+,,,Task turnaround time
+,,,
+,,,Estimation accuracy
+,,,
+,,,Rework rate after review
+,,,
+,,,Ability to handle bug fixes independently
+,,,
+,,,Target: ≥ 80% commitment reliability
+,,,
+,,Code Quality (10%),
+,,,
+,,,Code review rejection rate
+,,,
+,,,Sonar issues (critical/major)
+,,,
+,,,Adherence to coding standards
+,,,
+,,,Unit test coverage contribution
+,,,
+,,,"Clean PR practices (small, structured PRs)"
+,,,
+,,,"Target: Low critical issues, consistent improvement trend"
+,,,
+,,Defect & Stability Metrics (10%),
+,,,Defect density in delivered modules
+,,,
+,,,Production bug contribution %
+,,,
+,,,Response time to assigned defects
+,,,
+,,,Regression impact rate
+,,,
+,,,Target: ≤ 5–10% defect leakage
+,,,
+,,Technical Growth (10%),
+,,,
+,,,Learning new frameworks/tools
+,,,
+,,,Participation in technical discussions
+,,,
+,,,Contribution to refactoring
+,,,
+,,,Completion of assigned learning roadmap
+,,,
+,,,Target: 1 certification or skill upgrade per year
+,,,
+,,Collaboration & Communication (10%),
+,,,
+,,,Stand-up clarity
+,,,
+,,,PR discussion participation
+,,,
+,,,Documentation contribution
+,,,
+,,,Responsiveness to feedback
+,,,
+,,,
+,,Professional Behavior (10%),
+,,,
+,,,Attendance & punctuality
+,,,
+,,,Accountability
+,,,
+,,,"Following process (branching, commits, tickets)"
+,,,
+,,,Positive team behavior
+,,,

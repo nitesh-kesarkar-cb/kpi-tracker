@@ -1,0 +1,135 @@
+// KPI Tracker — Prisma schema (SQLite)
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// SQLite has no native enums; we store these as strings and constrain in app code.
+// AccessRole: EMPLOYEE | MANAGER | SUPER_ADMIN
+// CycleType:  MID_YEAR | YEAR_END
+// CycleStatus: DRAFT | OPEN | CLOSED
+// ReviewStatus: NOT_STARTED | SELF_IN_PROGRESS | SELF_SUBMITTED | MANAGER_IN_PROGRESS | FINALIZED
+
+model User {
+  id                String   @id @default(cuid())
+  employeeId        String   @unique
+  firstName         String
+  lastName          String
+  email             String   @unique
+  passwordHash      String
+  jobTitle          String
+  accessRole        String   @default("EMPLOYEE")
+  mustChangePassword Boolean @default(true)
+  isActive          Boolean  @default(true)
+
+  // KPI template assigned to this employee
+  kpiRoleId         String?
+  kpiRole           KpiRole? @relation(fields: [kpiRoleId], references: [id], onDelete: SetNull)
+
+  // Reporting line (self relation)
+  managerId         String?
+  manager           User?    @relation("ManagerReports", fields: [managerId], references: [id], onDelete: SetNull)
+  reports           User[]   @relation("ManagerReports")
+
+  reviews           Review[] @relation("EmployeeReviews")
+  managedReviews    Review[] @relation("ManagerReviews")
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+model KpiRole {
+  id          String        @id @default(cuid())
+  name        String        @unique
+  experience  String?
+  description String?
+  categories  KpiCategory[]
+  users       User[]
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+}
+
+model KpiCategory {
+  id        String      @id @default(cuid())
+  kpiRoleId String
+  kpiRole   KpiRole     @relation(fields: [kpiRoleId], references: [id], onDelete: Cascade)
+  name      String
+  weight    Int         @default(0) // percent
+  order     Int         @default(0)
+  metrics   KpiMetric[]
+}
+
+model KpiMetric {
+  id          String      @id @default(cuid())
+  categoryId  String
+  category    KpiCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  description String
+  target      String?
+  order       Int         @default(0)
+}
+
+model ReviewCycle {
+  id        String   @id @default(cuid())
+  name      String
+  type      String // MID_YEAR | YEAR_END
+  year      Int
+  status    String   @default("DRAFT") // DRAFT | OPEN | CLOSED
+  opensAt   DateTime?
+  closesAt  DateTime?
+  reviews   Review[]
+  createdAt DateTime @default(now())
+
+  @@unique([type, year])
+}
+
+model Review {
+  id         String   @id @default(cuid())
+  cycleId    String
+  cycle      ReviewCycle @relation(fields: [cycleId], references: [id], onDelete: Cascade)
+  employeeId String
+  employee   User     @relation("EmployeeReviews", fields: [employeeId], references: [id], onDelete: Cascade)
+  managerId  String?
+  manager    User?    @relation("ManagerReviews", fields: [managerId], references: [id], onDelete: SetNull)
+
+  status     String   @default("NOT_STARTED")
+
+  overallSelfScore    Float?
+  overallManagerScore Float?
+
+  managerFinalComments    String?
+  improvementFeedback     String?
+  employeeCompanyFeedback String?
+  finalReviewComments     String?
+
+  submittedAt DateTime?
+  finalizedAt DateTime?
+
+  metricScores MetricScore[]
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([cycleId, employeeId])
+}
+
+// Snapshot of one KPI metric within a review (decoupled from live KPI definitions).
+model MetricScore {
+  id            String  @id @default(cuid())
+  reviewId      String
+  review        Review  @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  metricId      String? // original metric reference (nullable if metric later deleted)
+  categoryName  String
+  categoryWeight Int     @default(0)
+  metricText    String
+  target        String?
+  order         Int      @default(0)
+
+  selfScore     Int?
+  selfComment   String?
+  managerScore  Int?
+  managerComment String?
+}

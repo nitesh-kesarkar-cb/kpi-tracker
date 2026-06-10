@@ -1,0 +1,111 @@
+﻿Designation ,Experience ,,Description 
+Software Architect ,10+ Years,,
+,,,
+,,AI Adoption & Responsible Usage (30%),
+,,,
+,,,"Defines/owns team AI usage guidelines, governance and data-security compliance"
+,,,
+,,,Drives adoption — % of team actively & effectively using Claude; license utilisation
+,,,
+,,,"Tracks and reports team-level AI productivity ROI (cycle-time, throughput, quality)"
+,,,
+,,,"Embeds AI into engineering workflows & standards (review, testing, docs, design exploration)"
+,,,
+,,,"Ensures responsible, secure and fair usage; zero data-handling violations across team"
+,,,
+,,,"Upskills team on AI, mentors, and builds an experimentation/innovation culture"
+,,,
+,,,Evaluates emerging AI tools/features and recommends or pilots adoption
+,,,
+,,Architecture & Design Excellence (20%),
+,,,
+,,,Scalable system design
+,,,
+,,,Clear architecture documentation
+,,,
+,,,Low architectural rework rate
+,,,
+,,,Standardization across modules
+,,,
+,,,Clean separation of concerns
+,,,
+,,,Design review effectiveness
+,,,
+,,,Target: Minimal re-architecture due to poor design decisions.
+,,,
+,,,
+,,,
+,, Scalability & Performance (15%),
+,,,
+,,,System load handling capability
+,,,
+,,,API response benchmarks
+,,,
+,,,Database performance optimization
+,,,
+,,,Caching strategy effectiveness
+,,,
+,,,Horizontal/vertical scaling readiness
+,,,
+,,,
+,,,
+,, Production Stability & Risk Management (15%),
+,,,
+,,,Reduction in high-severity incidents
+,,,
+,,,Risk assessment before major releases
+,,,
+,,,Failure point identification
+,,,
+,,,Disaster recovery planning
+,,,
+,,,MTTR reduction strategy
+,,,
+,,,
+,,,
+,, Technical Governance & Standards (5%),
+,,,
+,,,Coding standards definition
+,,,
+,,,Architecture review board participation
+,,,
+,,,Technology selection decisions
+,,,
+,,,Security compliance alignment
+,,,
+,,,Dependency management discipline
+,,,
+,,,
+,,,
+,,Technical Debt & Modernization (5%),
+,,,
+,,,Refactoring roadmap
+,,,
+,,,Legacy system improvement
+,,,
+,,,Cloud migration strategy
+,,,
+,,,Codebase maintainability trend
+,,,
+,,,
+,,,
+,,Cross-Team Influence & Mentorship (5%),
+,,,
+,,,Mentors Tech Leads
+,,,
+,,,Architecture workshops
+,,,
+,,,Knowledge sharing sessions
+,,,
+,,,Influences hiring decisions
+,,,
+,,,
+,,,
+,, Innovation & Strategic Vision (5%),
+,,,Introduces new technologies
+,,,
+,,,Evaluates build vs buy decisions
+,,,
+,,,Cost-performance optimization strategy
+,,,
+,,,Long-term technology roadmap
