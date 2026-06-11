@@ -255,6 +255,7 @@ async function main() {
     const user = await db.user.create({
       data: {
         employeeId: emp.employeeId,
+        empCode: emp.employeeId,
         firstName: emp.firstName,
         lastName: emp.lastName,
         email,

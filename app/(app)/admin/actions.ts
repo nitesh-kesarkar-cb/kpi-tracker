@@ -25,6 +25,57 @@ export async function updateEmployee(
   return { ok: true as const };
 }
 
+export async function updateEmployeeInfo(
+  userId: string,
+  data: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    jobTitle: string;
+    employeeId: string;
+    empCode: string;
+  }
+) {
+  await requireAdmin();
+  const firstName = data.firstName.trim();
+  const lastName = data.lastName.trim();
+  const email = data.email.trim().toLowerCase();
+  const jobTitle = data.jobTitle.trim();
+  const employeeId = data.employeeId.trim();
+  const empCode = data.empCode.trim();
+
+  if (!firstName || !lastName) return { ok: false as const, error: "Name is required" };
+  if (!email) return { ok: false as const, error: "Email is required" };
+  if (!employeeId) return { ok: false as const, error: "Employee ID is required" };
+
+  const emailClash = await db.user.findFirst({
+    where: { email, id: { not: userId } },
+    select: { id: true }
+  });
+  if (emailClash) return { ok: false as const, error: "Email already in use" };
+
+  const idClash = await db.user.findFirst({
+    where: { employeeId, id: { not: userId } },
+    select: { id: true }
+  });
+  if (idClash) return { ok: false as const, error: "Employee ID already in use" };
+
+  if (empCode) {
+    const codeClash = await db.user.findFirst({
+      where: { empCode, id: { not: userId } },
+      select: { id: true }
+    });
+    if (codeClash) return { ok: false as const, error: "Emp code already in use" };
+  }
+
+  await db.user.update({
+    where: { id: userId },
+    data: { firstName, lastName, email, jobTitle, employeeId, empCode: empCode || null }
+  });
+  revalidatePath("/admin/employees");
+  return { ok: true as const };
+}
+
 export async function resetEmployeePassword(userId: string) {
   await requireAdmin();
   const passwordHash = await bcrypt.hash(DEFAULT_PASSWORD, 10);

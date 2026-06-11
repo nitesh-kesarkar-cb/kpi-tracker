@@ -13,6 +13,10 @@ export default async function AdminEmployeesPage() {
 
   const employees: EmployeeRow[] = users.map((u) => ({
     id: u.id,
+    firstName: u.firstName,
+    lastName: u.lastName,
+    employeeId: u.employeeId,
+    empCode: u.empCode ?? "",
     name: `${u.firstName} ${u.lastName}`,
     email: u.email,
     jobTitle: u.jobTitle,

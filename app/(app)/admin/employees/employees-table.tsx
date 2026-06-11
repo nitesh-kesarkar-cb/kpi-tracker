@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { KeyRoundIcon, Loader2, SaveIcon } from "lucide-react";
+import { KeyRoundIcon, Loader2, PencilIcon, SaveIcon } from "lucide-react";
 
 import {
   Table,
@@ -20,15 +20,32 @@ import {
   SelectTrigger,
   SelectValue
 } from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { updateEmployee, resetEmployeePassword } from "@/app/(app)/admin/actions";
+import {
+  updateEmployee,
+  updateEmployeeInfo,
+  resetEmployeePassword
+} from "@/app/(app)/admin/actions";
 
 const NONE = "__none__";
 const ACCESS_ROLES = ["EMPLOYEE", "MANAGER", "SUPER_ADMIN"];
 
 export type EmployeeRow = {
   id: string;
+  firstName: string;
+  lastName: string;
+  employeeId: string;
+  empCode: string;
   name: string;
   email: string;
   jobTitle: string;
@@ -51,6 +68,8 @@ export function EmployeesTable({
   const router = useRouter();
   const [rows, setRows] = useState<EmployeeRow[]>(employees);
   const [busy, setBusy] = useState<string | null>(null);
+  const [editing, setEditing] = useState<EmployeeRow | null>(null);
+  const [savingInfo, setSavingInfo] = useState(false);
 
   function update(id: string, patch: Partial<EmployeeRow>) {
     setRows((prev) => prev.map((r) => (r.id === id ? { ...r, ...patch } : r)));
@@ -74,6 +93,36 @@ export function EmployeesTable({
     const res = await resetEmployeePassword(row.id);
     setBusy(null);
     if (res.ok) toast.success(`Password reset to ${res.password}`);
+  }
+
+  async function saveInfo() {
+    if (!editing) return;
+    setSavingInfo(true);
+    const res = await updateEmployeeInfo(editing.id, {
+      firstName: editing.firstName,
+      lastName: editing.lastName,
+      email: editing.email,
+      jobTitle: editing.jobTitle,
+      employeeId: editing.employeeId,
+      empCode: editing.empCode
+    });
+    setSavingInfo(false);
+    if (res.ok) {
+      update(editing.id, {
+        firstName: editing.firstName,
+        lastName: editing.lastName,
+        name: `${editing.firstName} ${editing.lastName}`,
+        email: editing.email,
+        jobTitle: editing.jobTitle,
+        employeeId: editing.employeeId,
+        empCode: editing.empCode
+      });
+      toast.success(`Updated ${editing.firstName} ${editing.lastName}`);
+      setEditing(null);
+      router.refresh();
+    } else {
+      toast.error(res.error ?? "Update failed");
+    }
   }
 
   return (
@@ -154,6 +203,14 @@ export function EmployeesTable({
               </TableCell>
               <TableCell className="text-right">
                 <div className="flex justify-end gap-1">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => setEditing(r)}
+                    disabled={busy === r.id}
+                    title="Edit employee info">
+                    <PencilIcon />
+                  </Button>
                   <Button size="sm" onClick={() => save(r)} disabled={busy === r.id}>
                     {busy === r.id ? <Loader2 className="size-4 animate-spin" /> : <SaveIcon />}
                     Save
@@ -172,6 +229,84 @@ export function EmployeesTable({
           ))}
         </TableBody>
       </Table>
+
+      <Dialog open={!!editing} onOpenChange={(o) => !o && setEditing(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Edit employee</DialogTitle>
+            <DialogDescription>
+              Update personal and job details. Years of experience are set on the KPI role.
+            </DialogDescription>
+          </DialogHeader>
+          {editing && (
+            <div className="grid gap-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="grid gap-2">
+                  <Label htmlFor="firstName">First name</Label>
+                  <Input
+                    id="firstName"
+                    value={editing.firstName}
+                    onChange={(e) => setEditing({ ...editing, firstName: e.target.value })}
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="lastName">Last name</Label>
+                  <Input
+                    id="lastName"
+                    value={editing.lastName}
+                    onChange={(e) => setEditing({ ...editing, lastName: e.target.value })}
+                  />
+                </div>
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  value={editing.email}
+                  onChange={(e) => setEditing({ ...editing, email: e.target.value })}
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="grid gap-2">
+                  <Label htmlFor="employeeId">Employee ID</Label>
+                  <Input
+                    id="employeeId"
+                    value={editing.employeeId}
+                    onChange={(e) => setEditing({ ...editing, employeeId: e.target.value })}
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="empCode">Emp Code</Label>
+                  <Input
+                    id="empCode"
+                    placeholder="PW…"
+                    value={editing.empCode}
+                    onChange={(e) => setEditing({ ...editing, empCode: e.target.value })}
+                  />
+                </div>
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="jobTitle">Job title</Label>
+                <Input
+                  id="jobTitle"
+                  value={editing.jobTitle}
+                  onChange={(e) => setEditing({ ...editing, jobTitle: e.target.value })}
+                />
+              </div>
+            </div>
+          )}
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEditing(null)} disabled={savingInfo}>
+              Cancel
+            </Button>
+            <Button onClick={saveInfo} disabled={savingInfo}>
+              {savingInfo ? <Loader2 className="size-4 animate-spin" /> : <SaveIcon />}
+              Save changes
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
