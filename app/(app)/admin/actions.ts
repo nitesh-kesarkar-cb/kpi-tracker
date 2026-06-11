@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import bcrypt from "bcryptjs";
 import { requireAdmin } from "@/lib/auth-guards";
 import { db } from "@/lib/db";
+import { logAudit } from "@/lib/audit";
 
 const DEFAULT_PASSWORD = "Codeblaze@2026";
 
@@ -12,7 +13,11 @@ export async function updateEmployee(
   userId: string,
   data: { kpiRoleId: string | null; managerId: string | null; accessRole: string }
 ) {
-  await requireAdmin();
+  const admin = await requireAdmin();
+  const target = await db.user.findUnique({
+    where: { id: userId },
+    select: { firstName: true, lastName: true, accessRole: true, kpiRoleId: true, managerId: true }
+  });
   await db.user.update({
     where: { id: userId },
     data: {
@@ -20,6 +25,15 @@ export async function updateEmployee(
       managerId: data.managerId || null,
       accessRole: data.accessRole
     }
+  });
+  await logAudit({
+    actor: admin,
+    category: "ADMIN",
+    action: "employee.update_assignment",
+    entityType: "User",
+    entityId: userId,
+    summary: `Updated role/manager/access for ${target?.firstName ?? ""} ${target?.lastName ?? ""}`.trim(),
+    metadata: { before: target, after: data }
   });
   revalidatePath("/admin/employees");
   return { ok: true as const };
@@ -37,7 +51,7 @@ export async function updateEmployeeInfo(
     careerStartDate: string | null;
   }
 ) {
-  await requireAdmin();
+  const admin = await requireAdmin();
   const firstName = data.firstName.trim();
   const lastName = data.lastName.trim();
   const email = data.email.trim().toLowerCase();
@@ -66,24 +80,57 @@ export async function updateEmployeeInfo(
     where: { id: userId },
     data: { firstName, lastName, email, jobTitle, employeeId, dateOfJoining, careerStartDate }
   });
+  await logAudit({
+    actor: admin,
+    category: "ADMIN",
+    action: "employee.update_info",
+    entityType: "User",
+    entityId: userId,
+    summary: `Edited profile of ${firstName} ${lastName} (${employeeId})`,
+    metadata: { firstName, lastName, email, jobTitle, employeeId, dateOfJoining, careerStartDate }
+  });
   revalidatePath("/admin/employees");
   return { ok: true as const };
 }
 
 export async function resetEmployeePassword(userId: string) {
-  await requireAdmin();
+  const admin = await requireAdmin();
+  const target = await db.user.findUnique({
+    where: { id: userId },
+    select: { firstName: true, lastName: true, email: true }
+  });
   const passwordHash = await bcrypt.hash(DEFAULT_PASSWORD, 10);
   await db.user.update({
     where: { id: userId },
     data: { passwordHash, mustChangePassword: true }
+  });
+  await logAudit({
+    actor: admin,
+    category: "ADMIN",
+    action: "employee.reset_password",
+    entityType: "User",
+    entityId: userId,
+    summary: `Reset password for ${target?.firstName ?? ""} ${target?.lastName ?? ""}`.trim()
   });
   revalidatePath("/admin/employees");
   return { ok: true as const, password: DEFAULT_PASSWORD };
 }
 
 export async function setEmployeeActive(userId: string, isActive: boolean) {
-  await requireAdmin();
+  const admin = await requireAdmin();
+  const target = await db.user.findUnique({
+    where: { id: userId },
+    select: { firstName: true, lastName: true }
+  });
   await db.user.update({ where: { id: userId }, data: { isActive } });
+  await logAudit({
+    actor: admin,
+    category: "ADMIN",
+    action: isActive ? "employee.activate" : "employee.deactivate",
+    entityType: "User",
+    entityId: userId,
+    summary: `${isActive ? "Activated" : "Deactivated"} ${target?.firstName ?? ""} ${target?.lastName ?? ""}`.trim()
+  });
   revalidatePath("/admin/employees");
   return { ok: true as const };
 }
@@ -94,16 +141,25 @@ export async function createKpiRole(data: {
   experience: string;
   description: string;
 }) {
-  await requireAdmin();
+  const admin = await requireAdmin();
   if (!data.name.trim()) return { ok: false, error: "Name is required" };
   const existing = await db.kpiRole.findUnique({ where: { name: data.name.trim() } });
   if (existing) return { ok: false, error: "A role with this name already exists" };
-  await db.kpiRole.create({
+  const role = await db.kpiRole.create({
     data: {
       name: data.name.trim(),
       experience: data.experience || null,
       description: data.description || null
     }
+  });
+  await logAudit({
+    actor: admin,
+    category: "ADMIN",
+    action: "kpi_role.create",
+    entityType: "KpiRole",
+    entityId: role.id,
+    summary: `Created KPI role "${role.name}"`,
+    metadata: { experience: data.experience, description: data.description }
   });
   revalidatePath("/admin/roles");
   revalidatePath("/admin/kpis");
@@ -111,8 +167,17 @@ export async function createKpiRole(data: {
 }
 
 export async function deleteKpiRole(id: string) {
-  await requireAdmin();
+  const admin = await requireAdmin();
+  const role = await db.kpiRole.findUnique({ where: { id }, select: { name: true } });
   await db.kpiRole.delete({ where: { id } });
+  await logAudit({
+    actor: admin,
+    category: "ADMIN",
+    action: "kpi_role.delete",
+    entityType: "KpiRole",
+    entityId: id,
+    summary: `Deleted KPI role "${role?.name ?? id}"`
+  });
   revalidatePath("/admin/roles");
   revalidatePath("/admin/kpis");
   return { ok: true as const };
@@ -126,14 +191,14 @@ export async function upsertCategory(data: {
   weight: number;
   order: number;
 }) {
-  await requireAdmin();
+  const admin = await requireAdmin();
   if (data.id) {
     await db.kpiCategory.update({
       where: { id: data.id },
       data: { name: data.name, weight: data.weight, order: data.order }
     });
   } else {
-    await db.kpiCategory.create({
+    const created = await db.kpiCategory.create({
       data: {
         kpiRoleId: data.kpiRoleId,
         name: data.name,
@@ -141,14 +206,33 @@ export async function upsertCategory(data: {
         order: data.order
       }
     });
+    data = { ...data, id: created.id };
   }
+  await logAudit({
+    actor: admin,
+    category: "ADMIN",
+    action: data.id ? "kpi_category.update" : "kpi_category.create",
+    entityType: "KpiCategory",
+    entityId: data.id,
+    summary: `${data.id ? "Updated" : "Created"} category "${data.name}" (${data.weight}%)`,
+    metadata: { kpiRoleId: data.kpiRoleId, weight: data.weight, order: data.order }
+  });
   revalidatePath("/admin/kpis");
   return { ok: true as const };
 }
 
 export async function deleteCategory(id: string) {
-  await requireAdmin();
+  const admin = await requireAdmin();
+  const cat = await db.kpiCategory.findUnique({ where: { id }, select: { name: true } });
   await db.kpiCategory.delete({ where: { id } });
+  await logAudit({
+    actor: admin,
+    category: "ADMIN",
+    action: "kpi_category.delete",
+    entityType: "KpiCategory",
+    entityId: id,
+    summary: `Deleted category "${cat?.name ?? id}"`
+  });
   revalidatePath("/admin/kpis");
   return { ok: true as const };
 }
@@ -161,14 +245,14 @@ export async function upsertMetric(data: {
   target: string;
   order: number;
 }) {
-  await requireAdmin();
+  const admin = await requireAdmin();
   if (data.id) {
     await db.kpiMetric.update({
       where: { id: data.id },
       data: { description: data.description, target: data.target || null, order: data.order }
     });
   } else {
-    await db.kpiMetric.create({
+    const created = await db.kpiMetric.create({
       data: {
         categoryId: data.categoryId,
         description: data.description,
@@ -176,34 +260,62 @@ export async function upsertMetric(data: {
         order: data.order
       }
     });
+    data = { ...data, id: created.id };
   }
+  await logAudit({
+    actor: admin,
+    category: "ADMIN",
+    action: data.id ? "kpi_metric.update" : "kpi_metric.create",
+    entityType: "KpiMetric",
+    entityId: data.id,
+    summary: `${data.id ? "Updated" : "Created"} metric "${data.description.slice(0, 60)}"`,
+    metadata: { categoryId: data.categoryId, target: data.target, order: data.order }
+  });
   revalidatePath("/admin/kpis");
   return { ok: true as const };
 }
 
 export async function deleteMetric(id: string) {
-  await requireAdmin();
+  const admin = await requireAdmin();
+  const metric = await db.kpiMetric.findUnique({ where: { id }, select: { description: true } });
   await db.kpiMetric.delete({ where: { id } });
+  await logAudit({
+    actor: admin,
+    category: "ADMIN",
+    action: "kpi_metric.delete",
+    entityType: "KpiMetric",
+    entityId: id,
+    summary: `Deleted metric "${(metric?.description ?? id).slice(0, 60)}"`
+  });
   revalidatePath("/admin/kpis");
   return { ok: true as const };
 }
 
 // ---------- Cycles ----------
 export async function createCycle(data: { name: string; type: string; year: number }) {
-  await requireAdmin();
+  const admin = await requireAdmin();
   const exists = await db.reviewCycle.findUnique({
     where: { type_year: { type: data.type, year: data.year } }
   });
   if (exists) return { ok: false, error: "A cycle of this type already exists for that year" };
-  await db.reviewCycle.create({
+  const cycle = await db.reviewCycle.create({
     data: { name: data.name, type: data.type, year: data.year, status: "DRAFT" }
+  });
+  await logAudit({
+    actor: admin,
+    category: "ADMIN",
+    action: "cycle.create",
+    entityType: "ReviewCycle",
+    entityId: cycle.id,
+    summary: `Created review cycle "${cycle.name}" (${data.type} ${data.year})`
   });
   revalidatePath("/admin/cycles");
   return { ok: true as const };
 }
 
 export async function setCycleStatus(id: string, status: string) {
-  await requireAdmin();
+  const admin = await requireAdmin();
+  const cycle = await db.reviewCycle.findUnique({ where: { id }, select: { name: true, status: true } });
   await db.reviewCycle.update({
     where: { id },
     data: {
@@ -212,13 +324,22 @@ export async function setCycleStatus(id: string, status: string) {
       closesAt: status === "CLOSED" ? new Date() : undefined
     }
   });
+  await logAudit({
+    actor: admin,
+    category: "ADMIN",
+    action: "cycle.set_status",
+    entityType: "ReviewCycle",
+    entityId: id,
+    summary: `Set cycle "${cycle?.name ?? id}" status ${cycle?.status ?? "?"} → ${status}`,
+    metadata: { from: cycle?.status, to: status }
+  });
   revalidatePath("/admin/cycles");
   return { ok: true as const };
 }
 
 /** Create reviews + metric snapshots for all active users with a KPI role who lack one. */
 export async function generateReviews(cycleId: string) {
-  await requireAdmin();
+  const admin = await requireAdmin();
   const users = await db.user.findMany({
     where: { kpiRoleId: { not: null }, isActive: true },
     include: { kpiRole: { include: { categories: { include: { metrics: true } } } } }
@@ -263,6 +384,15 @@ export async function generateReviews(cycleId: string) {
     });
     created++;
   }
+  await logAudit({
+    actor: admin,
+    category: "ADMIN",
+    action: "cycle.generate_reviews",
+    entityType: "ReviewCycle",
+    entityId: cycleId,
+    summary: `Generated ${created} review(s) for cycle`,
+    metadata: { created }
+  });
   revalidatePath("/admin/cycles");
   return { ok: true as const, created };
 }

@@ -15,6 +15,7 @@ import {
   CalendarRangeIcon,
   MessageSquareTextIcon,
   BarChart3Icon,
+  ScrollTextIcon,
   LogOutIcon,
   type LucideIcon
 } from "lucide-react";
@@ -68,7 +69,8 @@ function buildNav(role: string): NavGroup[] {
         { title: "Manage KPIs", href: "/admin/kpis", icon: GaugeIcon },
         { title: "Review Cycles", href: "/admin/cycles", icon: CalendarRangeIcon },
         { title: "Feedback", href: "/admin/feedback", icon: MessageSquareTextIcon },
-        { title: "Reports", href: "/admin/reports", icon: BarChart3Icon }
+        { title: "Reports", href: "/admin/reports", icon: BarChart3Icon },
+        { title: "Audit Log", href: "/admin/audit", icon: ScrollTextIcon }
       ]
     });
   }

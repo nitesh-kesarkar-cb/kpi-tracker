@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { assertReviewOwner } from "@/lib/auth-guards";
 import { db } from "@/lib/db";
+import { logAudit } from "@/lib/audit";
 import { rollupByCategory, overallPercent } from "@/lib/scoring";
 
 export type SelfScoreInput = {
@@ -30,7 +31,7 @@ export async function saveSelfReview(
   companyFeedback: string,
   submit: boolean
 ) {
-  await assertReviewOwner(reviewId);
+  const actor = await assertReviewOwner(reviewId);
 
   const review = await db.review.findUnique({ where: { id: reviewId } });
   if (!review) return { ok: false, error: "Review not found" };
@@ -70,6 +71,18 @@ export async function saveSelfReview(
       status: submit ? "SELF_SUBMITTED" : "SELF_IN_PROGRESS",
       submittedAt: submit ? new Date() : review.submittedAt
     }
+  });
+
+  await logAudit({
+    actor,
+    category: "REVIEW",
+    action: submit ? "review.self_submit" : "review.self_save",
+    entityType: "Review",
+    entityId: reviewId,
+    summary: submit
+      ? `Submitted self-review (overall ${overallSelfScore ?? "—"}%)`
+      : `Saved self-review draft`,
+    metadata: { overallSelfScore, metricsScored: scores.length }
   });
 
   revalidatePath(`/reviews/${reviewId}`);

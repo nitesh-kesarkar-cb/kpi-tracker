@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { assertReviewManager } from "@/lib/auth-guards";
 import { db } from "@/lib/db";
+import { logAudit } from "@/lib/audit";
 import { rollupByCategory, overallPercent } from "@/lib/scoring";
 
 export type ManagerScoreInput = {
@@ -23,7 +24,7 @@ export async function saveManagerReview(
   feedback: ManagerReviewFeedback,
   finalize: boolean
 ) {
-  await assertReviewManager(reviewId);
+  const actor = await assertReviewManager(reviewId);
 
   const review = await db.review.findUnique({ where: { id: reviewId } });
   if (!review) return { ok: false, error: "Review not found" };
@@ -76,6 +77,18 @@ export async function saveManagerReview(
       status: finalize ? "FINALIZED" : "MANAGER_IN_PROGRESS",
       finalizedAt: finalize ? new Date() : review.finalizedAt
     }
+  });
+
+  await logAudit({
+    actor,
+    category: "REVIEW",
+    action: finalize ? "review.manager_finalize" : "review.manager_save",
+    entityType: "Review",
+    entityId: reviewId,
+    summary: finalize
+      ? `Finalized review for employee (overall ${overallManagerScore ?? "—"}%)`
+      : `Saved manager review draft`,
+    metadata: { overallManagerScore, employeeId: review.employeeId }
   });
 
   revalidatePath(`/team/reviews/${reviewId}`);

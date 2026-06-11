@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { KpiSidebar } from "@/components/kpi/kpi-sidebar";
 import { KpiHeader } from "@/components/kpi/kpi-header";
+import { PageViewTracker } from "@/components/kpi/page-view-tracker";
 import { requireUser } from "@/lib/auth-guards";
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
@@ -24,6 +25,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
           "--content-margin": "calc(var(--spacing) * 1.5)"
         } as React.CSSProperties
       }>
+      <PageViewTracker />
       <KpiSidebar user={{ name: user.name, email: user.email, accessRole: user.accessRole }} />
       <SidebarInset>
         <KpiHeader accessRole={user.accessRole} />

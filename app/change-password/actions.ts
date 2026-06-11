@@ -4,6 +4,7 @@ import bcrypt from "bcryptjs";
 import { z } from "zod";
 import { requireUser } from "@/lib/auth-guards";
 import { db } from "@/lib/db";
+import { logAudit } from "@/lib/audit";
 
 const schema = z
   .object({
@@ -37,6 +38,15 @@ export async function changePassword(_prev: unknown, formData: FormData) {
   await db.user.update({
     where: { id: user.id },
     data: { passwordHash, mustChangePassword: false }
+  });
+
+  await logAudit({
+    actor: user,
+    category: "ACCOUNT",
+    action: "account.password_change",
+    entityType: "User",
+    entityId: user.id,
+    summary: "Changed own password"
   });
 
   return { ok: true as const };
