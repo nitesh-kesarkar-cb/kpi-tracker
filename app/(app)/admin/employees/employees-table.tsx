@@ -31,6 +31,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { DatePicker } from "@/components/date-picker";
 import {
   updateEmployee,
   updateEmployeeInfo,
@@ -45,14 +46,29 @@ export type EmployeeRow = {
   firstName: string;
   lastName: string;
   employeeId: string;
-  empCode: string;
   name: string;
   email: string;
   jobTitle: string;
   accessRole: string;
   kpiRoleId: string | null;
   managerId: string | null;
+  // ISO date strings (yyyy-mm-ddT...), or null
+  dateOfJoining: string | null;
+  careerStartDate: string | null;
 };
+
+/** Whole + fractional years between a past date and now, formatted "Ny Mm". */
+function yearsSince(iso: string | null): string | null {
+  if (!iso) return null;
+  const from = new Date(iso);
+  const now = new Date();
+  let months = (now.getFullYear() - from.getFullYear()) * 12 + (now.getMonth() - from.getMonth());
+  if (now.getDate() < from.getDate()) months -= 1;
+  if (months < 0) return null;
+  const y = Math.floor(months / 12);
+  const m = months % 12;
+  return `${y}y ${m}m`;
+}
 
 type Option = { id: string; name: string };
 
@@ -104,7 +120,8 @@ export function EmployeesTable({
       email: editing.email,
       jobTitle: editing.jobTitle,
       employeeId: editing.employeeId,
-      empCode: editing.empCode
+      dateOfJoining: editing.dateOfJoining,
+      careerStartDate: editing.careerStartDate
     });
     setSavingInfo(false);
     if (res.ok) {
@@ -115,7 +132,8 @@ export function EmployeesTable({
         email: editing.email,
         jobTitle: editing.jobTitle,
         employeeId: editing.employeeId,
-        empCode: editing.empCode
+        dateOfJoining: editing.dateOfJoining,
+        careerStartDate: editing.careerStartDate
       });
       toast.success(`Updated ${editing.firstName} ${editing.lastName}`);
       setEditing(null);
@@ -235,7 +253,7 @@ export function EmployeesTable({
           <DialogHeader>
             <DialogTitle>Edit employee</DialogTitle>
             <DialogDescription>
-              Update personal and job details. Years of experience are set on the KPI role.
+              Update personal and job details. Joining dates drive tenure and total experience.
             </DialogDescription>
           </DialogHeader>
           {editing && (
@@ -277,22 +295,45 @@ export function EmployeesTable({
                   />
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="empCode">Emp Code</Label>
+                  <Label htmlFor="jobTitle">Job title</Label>
                   <Input
-                    id="empCode"
-                    placeholder="PW…"
-                    value={editing.empCode}
-                    onChange={(e) => setEditing({ ...editing, empCode: e.target.value })}
+                    id="jobTitle"
+                    value={editing.jobTitle}
+                    onChange={(e) => setEditing({ ...editing, jobTitle: e.target.value })}
                   />
                 </div>
               </div>
-              <div className="grid gap-2">
-                <Label htmlFor="jobTitle">Job title</Label>
-                <Input
-                  id="jobTitle"
-                  value={editing.jobTitle}
-                  onChange={(e) => setEditing({ ...editing, jobTitle: e.target.value })}
-                />
+              <div className="grid grid-cols-2 gap-4">
+                <div className="grid gap-2">
+                  <Label>Date of joining (current org)</Label>
+                  <DatePicker
+                    date={editing.dateOfJoining ? new Date(editing.dateOfJoining) : undefined}
+                    setDate={(d) =>
+                      setEditing({ ...editing, dateOfJoining: d ? d.toISOString() : null })
+                    }
+                    placeholder="Not set"
+                  />
+                  {yearsSince(editing.dateOfJoining) && (
+                    <p className="text-muted-foreground text-xs">
+                      Current tenure: {yearsSince(editing.dateOfJoining)}
+                    </p>
+                  )}
+                </div>
+                <div className="grid gap-2">
+                  <Label>Career start (industry)</Label>
+                  <DatePicker
+                    date={editing.careerStartDate ? new Date(editing.careerStartDate) : undefined}
+                    setDate={(d) =>
+                      setEditing({ ...editing, careerStartDate: d ? d.toISOString() : null })
+                    }
+                    placeholder="Not set"
+                  />
+                  {yearsSince(editing.careerStartDate) && (
+                    <p className="text-muted-foreground text-xs">
+                      Total experience: {yearsSince(editing.careerStartDate)}
+                    </p>
+                  )}
+                </div>
               </div>
             </div>
           )}

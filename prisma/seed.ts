@@ -131,6 +131,308 @@ function parseEmployees(): EmpRow[] {
   return out;
 }
 
+// KPI roles with no Master_Sheet CSV — defined inline here (categories + metrics).
+// House style: every role opens with the shared AI Adoption category (25%),
+// then role-specific categories filling the remaining 75% (weights sum to 100%).
+type ExtraCategory = { name: string; weight: number; metrics: string[] };
+type ExtraRole = { name: string; experience?: string; categories: ExtraCategory[] };
+
+// Shared first category, identical across all roles (mirrors the CSV roles).
+const AI_ADOPTION: ExtraCategory = {
+  name: "AI Adoption & Responsible Usage",
+  weight: 25,
+  metrics: [
+    "Integrates Claude into daily work, analysis and documentation",
+    "Measurable effort/TAT improvement with no drop in quality",
+    "Validates & refines AI output to meet quality standards",
+    "Effective prompting — provides context, iterates, reuses proven patterns",
+    "Full compliance with usage policy; zero data-handling violations; no over-reliance",
+    "Adopts new Claude features and shares learnings with the team"
+  ]
+};
+
+const EXTRA_KPI_ROLES: ExtraRole[] = [
+  {
+    name: "Accounts Executive",
+    experience: "2-4 Years",
+    categories: [
+      AI_ADOPTION,
+      {
+        name: "Financial Accuracy & Compliance",
+        weight: 25,
+        metrics: [
+          "Timely and accurate invoicing & bookkeeping",
+          "Ledger reconciliation accuracy",
+          "Compliance with tax/VAT filing deadlines",
+          "Zero material errors in books of accounts",
+          "Audit-ready documentation maintained"
+        ]
+      },
+      {
+        name: "Receivables & Payables",
+        weight: 20,
+        metrics: [
+          "Days Sales Outstanding (DSO) within target",
+          "Timely vendor payments",
+          "Proactive follow-up on overdue receivables",
+          "Accurate cash-flow reporting"
+        ]
+      },
+      {
+        name: "Reporting & Process",
+        weight: 15,
+        metrics: [
+          "Monthly closing completed within timeline",
+          "Accurate MIS / financial reports",
+          "Adherence to financial controls & process"
+        ]
+      },
+      {
+        name: "Collaboration & Communication",
+        weight: 15,
+        metrics: [
+          "Clear coordination with vendors and clients",
+          "Responsiveness to internal queries",
+          "Constructive cross-team support"
+        ]
+      }
+    ]
+  },
+  {
+    name: "IT Support",
+    experience: "1-3 Years",
+    categories: [
+      AI_ADOPTION,
+      {
+        name: "Incident Resolution & Support",
+        weight: 30,
+        metrics: [
+          "First-response within SLA",
+          "Ticket resolution turnaround time",
+          "Low ticket reopen rate",
+          "Accurate root-cause logging",
+          "User satisfaction on closed tickets"
+        ]
+      },
+      {
+        name: "System Uptime & Maintenance",
+        weight: 20,
+        metrics: [
+          "Asset & inventory accuracy",
+          "Preventive maintenance completion",
+          "Backup & patch compliance",
+          "Minimal unplanned downtime"
+        ]
+      },
+      {
+        name: "Security & Compliance",
+        weight: 15,
+        metrics: [
+          "Access-control hygiene",
+          "Endpoint security compliance",
+          "Adherence to IT policy"
+        ]
+      },
+      {
+        name: "Collaboration & Documentation",
+        weight: 10,
+        metrics: [
+          "Clear runbooks / knowledge-base articles",
+          "Responsive cross-team support",
+          "Knowledge sharing with the team"
+        ]
+      }
+    ]
+  },
+  {
+    name: "Data Analyst",
+    experience: "2-4 Years",
+    categories: [
+      AI_ADOPTION,
+      {
+        name: "Data Quality & Accuracy",
+        weight: 25,
+        metrics: [
+          "Accuracy of reports and dashboards",
+          "Data validation & cleansing rigor",
+          "Low error / rework rate",
+          "Source-data integrity checks"
+        ]
+      },
+      {
+        name: "Analysis & Insights",
+        weight: 20,
+        metrics: [
+          "Actionable insights delivered",
+          "Timeliness of analysis",
+          "Relevance to business questions",
+          "Clear, accurate visualization"
+        ]
+      },
+      {
+        name: "Tooling & Querying",
+        weight: 15,
+        metrics: [
+          "SQL / query efficiency",
+          "Reusable queries & datasets",
+          "Dashboard maintainability"
+        ]
+      },
+      {
+        name: "Collaboration & Communication",
+        weight: 15,
+        metrics: [
+          "Clear presentation of findings",
+          "Stakeholder requirement gathering",
+          "Documentation of methodology"
+        ]
+      }
+    ]
+  },
+  {
+    name: "Senior Data Analyst",
+    experience: "5+ Years",
+    categories: [
+      AI_ADOPTION,
+      {
+        name: "Advanced Analysis & Modeling",
+        weight: 25,
+        metrics: [
+          "Predictive / statistical analysis depth",
+          "Complex problem solving",
+          "Hypothesis-driven approach",
+          "Measurable business impact of insights"
+        ]
+      },
+      {
+        name: "Data Quality & Governance",
+        weight: 15,
+        metrics: [
+          "Data accuracy & integrity",
+          "Defines validation standards",
+          "Documentation & data lineage"
+        ]
+      },
+      {
+        name: "Mentorship & Leadership",
+        weight: 15,
+        metrics: [
+          "Guides and reviews junior analysts",
+          "Drives analytics best practices",
+          "Raises team capability"
+        ]
+      },
+      {
+        name: "Stakeholder & Strategy",
+        weight: 20,
+        metrics: [
+          "Translates business needs into analytics",
+          "Influences decisions with data",
+          "Proactive insight generation",
+          "Clear executive communication"
+        ]
+      }
+    ]
+  },
+  {
+    name: "HR Head",
+    experience: "8+ Years",
+    categories: [
+      AI_ADOPTION,
+      {
+        name: "Talent Acquisition & Retention",
+        weight: 20,
+        metrics: [
+          "Time-to-hire within target",
+          "Quality of hire",
+          "Attrition within target",
+          "Offer acceptance rate"
+        ]
+      },
+      {
+        name: "Employee Engagement & Culture",
+        weight: 20,
+        metrics: [
+          "Engagement survey scores",
+          "Grievance resolution turnaround",
+          "Engagement initiatives delivered"
+        ]
+      },
+      {
+        name: "HR Operations & Compliance",
+        weight: 15,
+        metrics: [
+          "Payroll accuracy & timeliness",
+          "Statutory / labor-law compliance",
+          "Accurate HR records & policy adherence"
+        ]
+      },
+      {
+        name: "L&D & Performance",
+        weight: 10,
+        metrics: [
+          "Training plan execution",
+          "Performance-cycle completion",
+          "Succession planning"
+        ]
+      },
+      {
+        name: "Strategy & Leadership",
+        weight: 10,
+        metrics: [
+          "HR strategy aligned to business",
+          "Leadership on org initiatives",
+          "Data-driven HR decisions"
+        ]
+      }
+    ]
+  },
+  {
+    name: "General Manager",
+    experience: "10+ Years",
+    categories: [
+      AI_ADOPTION,
+      {
+        name: "Business & Financial Performance",
+        weight: 25,
+        metrics: [
+          "Revenue / target achievement",
+          "Budget & cost control",
+          "Profitability / margin",
+          "P&L ownership"
+        ]
+      },
+      {
+        name: "Operational Excellence",
+        weight: 20,
+        metrics: [
+          "Delivery / SLA across teams",
+          "Process efficiency improvements",
+          "Resource utilization"
+        ]
+      },
+      {
+        name: "People & Leadership",
+        weight: 15,
+        metrics: [
+          "Team development & retention",
+          "Cross-functional alignment",
+          "Leadership effectiveness"
+        ]
+      },
+      {
+        name: "Strategy & Growth",
+        weight: 15,
+        metrics: [
+          "Strategic initiatives delivered",
+          "Client / stakeholder satisfaction",
+          "Market / growth contribution"
+        ]
+      }
+    ]
+  }
+];
+
 // employeeId -> KPI role template name (best effort; admin can override in-app)
 const KPI_ROLE_BY_EMP: Record<string, string> = {
   PW1223: "Engineering Manager", // Line Manager - Mobile
@@ -151,8 +453,13 @@ const KPI_ROLE_BY_EMP: Record<string, string> = {
   PW1897: "QA Analyst",
   PW11993: "QA Analyst",
   PW11992: "QA Analyst",
-  PW1291: "Software Engineer-1" // Nodejs
-  // Unmapped (no suitable template): Data Analyst, Data Scientist, Accounts, IT Support
+  PW1291: "Software Engineer-1", // Nodejs
+  PW1268: "Software Engineer-1", // Vikram Bhimannavar (Front End)
+  PW1899: "Accounts Executive", // Sagar Patil
+  PW1190: "IT Support", // Sofiyan Pathan
+  PW1221: "Data Analyst", // Bhushan Sonawane
+  PW1241: "Senior Data Analyst" // Pritthish Chattopadhyay (Senior Data Scientist)
+  // HR Head + General Manager roles created but left unassigned (Neha keeps Engineering Manager)
 };
 
 const SUPER_ADMINS = new Set(["PW1203", "PW11988"]);
@@ -243,6 +550,32 @@ async function main() {
     );
   }
 
+  // 1b) Inline KPI roles (no CSV) — categories + metrics defined in EXTRA_KPI_ROLES.
+  for (const r of EXTRA_KPI_ROLES) {
+    if (roleIdByName[r.name]) continue; // a CSV already defined this name
+    const role = await db.kpiRole.create({
+      data: {
+        name: r.name,
+        experience: r.experience ?? null,
+        categories: {
+          create: r.categories.map((c, ci) => ({
+            name: c.name,
+            weight: c.weight,
+            order: ci,
+            metrics: {
+              create: c.metrics.map((m, mi) => ({ description: m, order: mi }))
+            }
+          }))
+        }
+      }
+    });
+    roleIdByName[r.name] = role.id;
+    const totalWeight = r.categories.reduce((s, c) => s + c.weight, 0);
+    console.log(
+      `  KPI role "${r.name}" — ${r.categories.length} categories, weight sum ${totalWeight}%`
+    );
+  }
+
   // 2) Employees
   const passwordHash = await bcrypt.hash(DEFAULT_PASSWORD, 10);
   const employees = parseEmployees();
@@ -255,7 +588,6 @@ async function main() {
     const user = await db.user.create({
       data: {
         employeeId: emp.employeeId,
-        empCode: emp.employeeId,
         firstName: emp.firstName,
         lastName: emp.lastName,
         email,

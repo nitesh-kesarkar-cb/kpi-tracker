@@ -33,7 +33,8 @@ export async function updateEmployeeInfo(
     email: string;
     jobTitle: string;
     employeeId: string;
-    empCode: string;
+    dateOfJoining: string | null;
+    careerStartDate: string | null;
   }
 ) {
   await requireAdmin();
@@ -42,7 +43,8 @@ export async function updateEmployeeInfo(
   const email = data.email.trim().toLowerCase();
   const jobTitle = data.jobTitle.trim();
   const employeeId = data.employeeId.trim();
-  const empCode = data.empCode.trim();
+  const dateOfJoining = data.dateOfJoining ? new Date(data.dateOfJoining) : null;
+  const careerStartDate = data.careerStartDate ? new Date(data.careerStartDate) : null;
 
   if (!firstName || !lastName) return { ok: false as const, error: "Name is required" };
   if (!email) return { ok: false as const, error: "Email is required" };
@@ -60,17 +62,9 @@ export async function updateEmployeeInfo(
   });
   if (idClash) return { ok: false as const, error: "Employee ID already in use" };
 
-  if (empCode) {
-    const codeClash = await db.user.findFirst({
-      where: { empCode, id: { not: userId } },
-      select: { id: true }
-    });
-    if (codeClash) return { ok: false as const, error: "Emp code already in use" };
-  }
-
   await db.user.update({
     where: { id: userId },
-    data: { firstName, lastName, email, jobTitle, employeeId, empCode: empCode || null }
+    data: { firstName, lastName, email, jobTitle, employeeId, dateOfJoining, careerStartDate }
   });
   revalidatePath("/admin/employees");
   return { ok: true as const };
