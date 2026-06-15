@@ -10,7 +10,8 @@
     "postinstall": "prisma generate",
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
-    "db:seed": "prisma db seed"
+    "db:seed": "prisma db seed",
+    "db:migrate:add-users": "tsx prisma/data-migrations/2026-06-15-add-users.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.2.0",

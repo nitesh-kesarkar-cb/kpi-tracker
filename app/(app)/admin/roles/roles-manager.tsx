@@ -1,12 +1,27 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { toast } from "sonner";
-import { Loader2, PlusIcon, Trash2Icon } from "lucide-react";
+import {
+  ChevronDownIcon,
+  ChevronsUpDownIcon,
+  ChevronUpIcon,
+  Loader2,
+  PencilIcon,
+  PlusIcon,
+  Trash2Icon
+} from "lucide-react";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
+} from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -30,6 +45,9 @@ export type RoleRow = {
   userCount: number;
 };
 
+type SortKey = "name" | "experience" | "categoryCount" | "userCount";
+type SortDir = "asc" | "desc";
+
 export function RolesManager({ roles }: { roles: RoleRow[] }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
@@ -37,6 +55,31 @@ export function RolesManager({ roles }: { roles: RoleRow[] }) {
   const [name, setName] = useState("");
   const [experience, setExperience] = useState("");
   const [description, setDescription] = useState("");
+  const [sortKey, setSortKey] = useState<SortKey>("name");
+  const [sortDir, setSortDir] = useState<SortDir>("asc");
+
+  function toggleSort(key: SortKey) {
+    if (key === sortKey) setSortDir((d) => (d === "asc" ? "desc" : "asc"));
+    else {
+      setSortKey(key);
+      setSortDir("asc");
+    }
+  }
+
+  const sortedRoles = useMemo(() => {
+    const dir = sortDir === "asc" ? 1 : -1;
+    return [...roles].sort((a, b) => {
+      if (sortKey === "categoryCount" || sortKey === "userCount") {
+        return (a[sortKey] - b[sortKey]) * dir;
+      }
+      const av = sortKey === "experience" ? (a.experience ?? "") : a.name;
+      const bv = sortKey === "experience" ? (b.experience ?? "") : b.name;
+      // Empty experience always sinks to the bottom regardless of direction.
+      if (av === "" && bv !== "") return 1;
+      if (bv === "" && av !== "") return -1;
+      return av.localeCompare(bv, undefined, { sensitivity: "base" }) * dir;
+    });
+  }, [roles, sortKey, sortDir]);
 
   async function create() {
     setSaving(true);
@@ -56,6 +99,31 @@ export function RolesManager({ roles }: { roles: RoleRow[] }) {
     const res = await deleteKpiRole(id);
     if (res.ok) toast.success("Role deleted");
     router.refresh();
+  }
+
+  function SortHeader({
+    label,
+    sortKey: key,
+    className
+  }: {
+    label: string;
+    sortKey: SortKey;
+    className?: string;
+  }) {
+    const active = sortKey === key;
+    const Icon = !active ? ChevronsUpDownIcon : sortDir === "asc" ? ChevronUpIcon : ChevronDownIcon;
+    return (
+      <TableHead className={className}>
+        <button
+          type="button"
+          onClick={() => toggleSort(key)}
+          aria-sort={active ? (sortDir === "asc" ? "ascending" : "descending") : "none"}
+          className="hover:text-foreground -ml-1 inline-flex items-center gap-1 rounded px-1 font-medium transition-colors">
+          {label}
+          <Icon className={`size-3.5 ${active ? "" : "text-muted-foreground/60"}`} />
+        </button>
+      </TableHead>
+    );
   }
 
   return (
@@ -102,35 +170,51 @@ export function RolesManager({ roles }: { roles: RoleRow[] }) {
         </Dialog>
       </div>
 
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-        {roles.map((r) => (
-          <Card key={r.id}>
-            <CardHeader className="pb-2">
-              <div className="flex items-start justify-between">
-                <CardTitle className="text-base">{r.name}</CardTitle>
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  className="text-muted-foreground hover:text-destructive size-7"
-                  onClick={() => remove(r.id, r.userCount)}>
-                  <Trash2Icon className="size-4" />
-                </Button>
-              </div>
-              {r.experience && (
-                <p className="text-muted-foreground text-xs">{r.experience}</p>
-              )}
-            </CardHeader>
-            <CardContent className="flex items-center justify-between">
-              <div className="flex gap-2">
-                <Badge variant="outline">{r.categoryCount} categories</Badge>
-                <Badge variant="secondary">{r.userCount} people</Badge>
-              </div>
-              <Button asChild size="sm" variant="link">
-                <Link href={`/admin/kpis?role=${r.id}`}>Edit KPIs</Link>
-              </Button>
-            </CardContent>
-          </Card>
-        ))}
+      <div className="rounded-lg border">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <SortHeader label="Name" sortKey="name" />
+              <SortHeader label="Experience" sortKey="experience" />
+              <SortHeader label="Categories" sortKey="categoryCount" />
+              <SortHeader label="People" sortKey="userCount" />
+              <TableHead className="text-right">Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {sortedRoles.map((r) => (
+              <TableRow key={r.id}>
+                <TableCell className="font-medium">{r.name}</TableCell>
+                <TableCell className="text-muted-foreground">
+                  {r.experience ?? "—"}
+                </TableCell>
+                <TableCell>
+                  <Badge variant="outline">{r.categoryCount}</Badge>
+                </TableCell>
+                <TableCell>
+                  <Badge variant="secondary">{r.userCount}</Badge>
+                </TableCell>
+                <TableCell className="text-right">
+                  <div className="flex justify-end gap-1">
+                    <Button asChild size="sm" variant="outline" title="Edit KPIs">
+                      <Link href={`/admin/kpis?role=${r.id}`}>
+                        <PencilIcon />
+                      </Link>
+                    </Button>
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      className="text-muted-foreground hover:text-destructive size-7"
+                      onClick={() => remove(r.id, r.userCount)}
+                      title="Delete role">
+                      <Trash2Icon className="size-4" />
+                    </Button>
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
       </div>
     </div>
   );

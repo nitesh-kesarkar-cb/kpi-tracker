@@ -1,9 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { KeyRoundIcon, Loader2, PencilIcon, SaveIcon } from "lucide-react";
+import {
+  ChevronDownIcon,
+  ChevronsUpDownIcon,
+  ChevronUpIcon,
+  KeyRoundIcon,
+  Loader2,
+  PencilIcon,
+  SaveIcon
+} from "lucide-react";
 
 import {
   Table,
@@ -72,6 +80,9 @@ function yearsSince(iso: string | null): string | null {
 
 type Option = { id: string; name: string };
 
+type SortKey = "name" | "kpiRole" | "manager" | "access";
+type SortDir = "asc" | "desc";
+
 export function EmployeesTable({
   employees,
   kpiRoles,
@@ -86,10 +97,54 @@ export function EmployeesTable({
   const [busy, setBusy] = useState<string | null>(null);
   const [editing, setEditing] = useState<EmployeeRow | null>(null);
   const [savingInfo, setSavingInfo] = useState(false);
+  const [sortKey, setSortKey] = useState<SortKey>("name");
+  const [sortDir, setSortDir] = useState<SortDir>("asc");
 
   function update(id: string, patch: Partial<EmployeeRow>) {
     setRows((prev) => prev.map((r) => (r.id === id ? { ...r, ...patch } : r)));
   }
+
+  function toggleSort(key: SortKey) {
+    if (key === sortKey) setSortDir((d) => (d === "asc" ? "desc" : "asc"));
+    else {
+      setSortKey(key);
+      setSortDir("asc");
+    }
+  }
+
+  // id -> display name lookups for sorting the KPI Role / Manager columns.
+  const kpiNameById = useMemo(
+    () => new Map(kpiRoles.map((k) => [k.id, k.name])),
+    [kpiRoles]
+  );
+  const managerNameById = useMemo(
+    () => new Map(managers.map((m) => [m.id, m.name])),
+    [managers]
+  );
+
+  const sortedRows = useMemo(() => {
+    const value = (r: EmployeeRow): string => {
+      switch (sortKey) {
+        case "kpiRole":
+          return r.kpiRoleId ? (kpiNameById.get(r.kpiRoleId) ?? "") : "";
+        case "manager":
+          return r.managerId ? (managerNameById.get(r.managerId) ?? "") : "";
+        case "access":
+          return r.accessRole;
+        default:
+          return r.name;
+      }
+    };
+    const dir = sortDir === "asc" ? 1 : -1;
+    return [...rows].sort((a, b) => {
+      const av = value(a);
+      const bv = value(b);
+      // Unassigned/empty always sinks to the bottom regardless of direction.
+      if (av === "" && bv !== "") return 1;
+      if (bv === "" && av !== "") return -1;
+      return av.localeCompare(bv, undefined, { sensitivity: "base" }) * dir;
+    });
+  }, [rows, sortKey, sortDir, kpiNameById, managerNameById]);
 
   async function save(row: EmployeeRow) {
     setBusy(row.id);
@@ -143,20 +198,45 @@ export function EmployeesTable({
     }
   }
 
+  function SortHeader({
+    label,
+    sortKey: key,
+    className
+  }: {
+    label: string;
+    sortKey: SortKey;
+    className?: string;
+  }) {
+    const active = sortKey === key;
+    const Icon = !active ? ChevronsUpDownIcon : sortDir === "asc" ? ChevronUpIcon : ChevronDownIcon;
+    return (
+      <TableHead className={className}>
+        <button
+          type="button"
+          onClick={() => toggleSort(key)}
+          aria-sort={active ? (sortDir === "asc" ? "ascending" : "descending") : "none"}
+          className="hover:text-foreground -ml-1 inline-flex items-center gap-1 rounded px-1 font-medium transition-colors">
+          {label}
+          <Icon className={`size-3.5 ${active ? "" : "text-muted-foreground/60"}`} />
+        </button>
+      </TableHead>
+    );
+  }
+
   return (
     <div className="rounded-lg border">
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Employee</TableHead>
-            <TableHead>KPI Role</TableHead>
-            <TableHead>Manager</TableHead>
-            <TableHead>Access</TableHead>
+            <SortHeader label="Employee" sortKey="name" />
+            <SortHeader label="KPI Role" sortKey="kpiRole" />
+            <SortHeader label="Manager" sortKey="manager" />
+            <SortHeader label="Access" sortKey="access" />
             <TableHead className="text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {rows.map((r) => (
+          {sortedRows.map((r) => (
             <TableRow key={r.id}>
               <TableCell>
                 <div className="font-medium">{r.name}</div>
