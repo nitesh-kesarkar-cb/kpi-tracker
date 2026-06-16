@@ -166,6 +166,52 @@ export async function createKpiRole(data: {
   return { ok: true as const };
 }
 
+export async function updateKpiRole(data: {
+  id: string;
+  name: string;
+  experience: string;
+  description: string;
+}) {
+  const admin = await requireAdmin();
+  const name = data.name.trim();
+  if (!name) return { ok: false, error: "Name is required" };
+
+  const before = await db.kpiRole.findUnique({
+    where: { id: data.id },
+    select: { name: true, experience: true, description: true }
+  });
+  if (!before) return { ok: false, error: "Role not found" };
+
+  // Name is unique — reject if another role already uses the new name.
+  const clash = await db.kpiRole.findUnique({ where: { name } });
+  if (clash && clash.id !== data.id)
+    return { ok: false, error: "A role with this name already exists" };
+
+  const role = await db.kpiRole.update({
+    where: { id: data.id },
+    data: {
+      name,
+      experience: data.experience.trim() || null,
+      description: data.description.trim() || null
+    }
+  });
+  await logAudit({
+    actor: admin,
+    category: "ADMIN",
+    action: "kpi_role.update",
+    entityType: "KpiRole",
+    entityId: role.id,
+    summary: `Updated KPI role "${role.name}"`,
+    metadata: {
+      before,
+      after: { name: role.name, experience: role.experience, description: role.description }
+    }
+  });
+  revalidatePath("/admin/roles");
+  revalidatePath("/admin/kpis");
+  return { ok: true as const };
+}
+
 export async function deleteKpiRole(id: string) {
   const admin = await requireAdmin();
   const role = await db.kpiRole.findUnique({ where: { id }, select: { name: true } });

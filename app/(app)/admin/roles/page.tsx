@@ -15,6 +15,7 @@ export default async function AdminRolesPage() {
     id: r.id,
     name: r.name,
     experience: r.experience,
+    description: r.description,
     categoryCount: r._count.categories,
     userCount: r._count.users
   }));

@@ -8,6 +8,7 @@ import {
   ChevronDownIcon,
   ChevronsUpDownIcon,
   ChevronUpIcon,
+  GaugeIcon,
   Loader2,
   PencilIcon,
   PlusIcon,
@@ -35,12 +36,13 @@ import {
   DialogTitle,
   DialogTrigger
 } from "@/components/ui/dialog";
-import { createKpiRole, deleteKpiRole } from "@/app/(app)/admin/actions";
+import { createKpiRole, deleteKpiRole, updateKpiRole } from "@/app/(app)/admin/actions";
 
 export type RoleRow = {
   id: string;
   name: string;
   experience: string | null;
+  description: string | null;
   categoryCount: number;
   userCount: number;
 };
@@ -55,6 +57,8 @@ export function RolesManager({ roles }: { roles: RoleRow[] }) {
   const [name, setName] = useState("");
   const [experience, setExperience] = useState("");
   const [description, setDescription] = useState("");
+  const [editing, setEditing] = useState<RoleRow | null>(null);
+  const [savingEdit, setSavingEdit] = useState(false);
   const [sortKey, setSortKey] = useState<SortKey>("name");
   const [sortDir, setSortDir] = useState<SortDir>("asc");
 
@@ -91,6 +95,22 @@ export function RolesManager({ roles }: { roles: RoleRow[] }) {
     setName("");
     setExperience("");
     setDescription("");
+    router.refresh();
+  }
+
+  async function saveEdit() {
+    if (!editing) return;
+    setSavingEdit(true);
+    const res = await updateKpiRole({
+      id: editing.id,
+      name: editing.name,
+      experience: editing.experience ?? "",
+      description: editing.description ?? ""
+    });
+    setSavingEdit(false);
+    if (!res.ok) return toast.error(res.error);
+    toast.success("Role updated");
+    setEditing(null);
     router.refresh();
   }
 
@@ -196,9 +216,16 @@ export function RolesManager({ roles }: { roles: RoleRow[] }) {
                 </TableCell>
                 <TableCell className="text-right">
                   <div className="flex justify-end gap-1">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => setEditing(r)}
+                      title="Edit role details">
+                      <PencilIcon />
+                    </Button>
                     <Button asChild size="sm" variant="outline" title="Edit KPIs">
                       <Link href={`/admin/kpis?role=${r.id}`}>
-                        <PencilIcon />
+                        <GaugeIcon />
                       </Link>
                     </Button>
                     <Button
@@ -216,6 +243,52 @@ export function RolesManager({ roles }: { roles: RoleRow[] }) {
           </TableBody>
         </Table>
       </div>
+
+      <Dialog open={!!editing} onOpenChange={(o) => !o && setEditing(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Edit role</DialogTitle>
+            <DialogDescription>
+              Rename the designation or update its experience &amp; description.
+            </DialogDescription>
+          </DialogHeader>
+          {editing && (
+            <div className="space-y-3">
+              <div className="space-y-1">
+                <Label>Name</Label>
+                <Input
+                  value={editing.name}
+                  onChange={(e) => setEditing({ ...editing, name: e.target.value })}
+                />
+              </div>
+              <div className="space-y-1">
+                <Label>Experience</Label>
+                <Input
+                  value={editing.experience ?? ""}
+                  onChange={(e) => setEditing({ ...editing, experience: e.target.value })}
+                  placeholder="e.g. 0-2 Years"
+                />
+              </div>
+              <div className="space-y-1">
+                <Label>Description</Label>
+                <Input
+                  value={editing.description ?? ""}
+                  onChange={(e) => setEditing({ ...editing, description: e.target.value })}
+                />
+              </div>
+            </div>
+          )}
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEditing(null)} disabled={savingEdit}>
+              Cancel
+            </Button>
+            <Button onClick={saveEdit} disabled={savingEdit || !editing?.name.trim()}>
+              {savingEdit && <Loader2 className="size-4 animate-spin" />}
+              Save changes
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
