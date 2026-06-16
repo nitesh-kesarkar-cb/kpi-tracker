@@ -388,6 +388,59 @@ const EXTRA_KPI_ROLES: ExtraRole[] = [
     ]
   },
   {
+    name: "Program Manager",
+    experience: "5+ Years",
+    categories: [
+      AI_ADOPTION,
+      {
+        name: "Program Delivery & Execution",
+        weight: 20,
+        metrics: [
+          "On-time delivery of program milestones across projects",
+          "Scope, dependency & cross-workstream management",
+          "Deliverable quality meets agreed standards",
+          "Maintains an accurate program plan & roadmap"
+        ]
+      },
+      {
+        name: "Stakeholder & Communication",
+        weight: 15,
+        metrics: [
+          "Clear, timely stakeholder updates & status reporting",
+          "Manages expectations across sponsors and teams",
+          "Cross-functional alignment & conflict resolution"
+        ]
+      },
+      {
+        name: "Risk, Budget & Governance",
+        weight: 15,
+        metrics: [
+          "Proactive risk identification & mitigation",
+          "Budget / resource tracking within targets",
+          "Adherence to governance & program processes"
+        ]
+      },
+      {
+        name: "Team & Resource Coordination",
+        weight: 15,
+        metrics: [
+          "Effective resource allocation across projects",
+          "Removes blockers for delivery teams",
+          "Mentors & supports project managers / leads"
+        ]
+      },
+      {
+        name: "Strategic Alignment & Improvement",
+        weight: 10,
+        metrics: [
+          "Aligns program outcomes to business objectives",
+          "Drives delivery / process improvements",
+          "Measurable business impact of the program"
+        ]
+      }
+    ]
+  },
+  {
     name: "General Manager",
     experience: "10+ Years",
     categories: [
