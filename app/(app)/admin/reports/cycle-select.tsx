@@ -11,14 +11,16 @@ import {
 
 export function CycleSelect({
   cycles,
-  current
+  current,
+  basePath = "/admin/reports"
 }: {
   cycles: { id: string; name: string }[];
   current: string;
+  basePath?: string;
 }) {
   const router = useRouter();
   return (
-    <Select value={current} onValueChange={(v) => router.push(`/admin/reports?cycle=${v}`)}>
+    <Select value={current} onValueChange={(v) => router.push(`${basePath}?cycle=${v}`)}>
       <SelectTrigger className="w-56">
         <SelectValue />
       </SelectTrigger>

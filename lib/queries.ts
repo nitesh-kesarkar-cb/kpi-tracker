@@ -45,6 +45,19 @@ export async function getTeamReviews(managerId: string) {
   });
 }
 
+/** Every review in a cycle — admin-only org-wide view. */
+export async function getAllReviews(cycleId: string) {
+  return db.review.findMany({
+    where: { cycleId },
+    orderBy: { employee: { firstName: "asc" } },
+    include: {
+      cycle: true,
+      employee: { include: { kpiRole: true } },
+      manager: true
+    }
+  });
+}
+
 export async function getOpenCycle() {
   return db.reviewCycle.findFirst({
     where: { status: "OPEN" },

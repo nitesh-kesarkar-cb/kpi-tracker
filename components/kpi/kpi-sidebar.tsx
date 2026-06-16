@@ -13,6 +13,7 @@ import {
   LayersIcon,
   GaugeIcon,
   CalendarRangeIcon,
+  ClipboardCheckIcon,
   MessageSquareTextIcon,
   BarChart3Icon,
   ScrollTextIcon,
@@ -68,6 +69,7 @@ function buildNav(role: string): NavGroup[] {
         { title: "Roles", href: "/admin/roles", icon: LayersIcon },
         { title: "Manage KPIs", href: "/admin/kpis", icon: GaugeIcon },
         { title: "Review Cycles", href: "/admin/cycles", icon: CalendarRangeIcon },
+        { title: "All Reviews", href: "/admin/reviews", icon: ClipboardCheckIcon },
         { title: "Feedback", href: "/admin/feedback", icon: MessageSquareTextIcon },
         { title: "Reports", href: "/admin/reports", icon: BarChart3Icon },
         { title: "Audit Log", href: "/admin/audit", icon: ScrollTextIcon }
