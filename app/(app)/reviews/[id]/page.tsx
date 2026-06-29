@@ -11,8 +11,12 @@ export default async function ReviewDetailPage({ params }: { params: Promise<{ i
   const review = await getReviewDetail(id);
   if (!review) notFound();
 
-  const editable = review.status === "NOT_STARTED" || review.status === "SELF_IN_PROGRESS";
+  const editable =
+    review.status === "NOT_STARTED" ||
+    review.status === "SELF_IN_PROGRESS" ||
+    review.status === "SELF_SUBMITTED";
   const finalized = review.status === "FINALIZED";
+  const resubmittable = review.status === "SELF_SUBMITTED";
 
   const metrics: MetricRow[] = review.metricScores.map((m) => ({
     id: m.id,
@@ -64,7 +68,16 @@ export default async function ReviewDetailPage({ params }: { params: Promise<{ i
       {!editable && !finalized && (
         <Card>
           <CardContent className="text-muted-foreground py-4 text-sm">
-            You have submitted this review. It is now with your manager and can no longer be edited.
+            Your manager has started reviewing this. It can no longer be edited.
+          </CardContent>
+        </Card>
+      )}
+
+      {resubmittable && (
+        <Card>
+          <CardContent className="text-muted-foreground py-4 text-sm">
+            Submitted to your manager. You can still update ratings and comments until your manager
+            begins their review.
           </CardContent>
         </Card>
       )}
@@ -74,6 +87,7 @@ export default async function ReviewDetailPage({ params }: { params: Promise<{ i
         metrics={metrics}
         companyFeedback={review.employeeCompanyFeedback}
         editable={editable}
+        resubmit={resubmittable}
         showManager={finalized}
       />
     </div>

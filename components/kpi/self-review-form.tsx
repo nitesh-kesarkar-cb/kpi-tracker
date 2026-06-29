@@ -30,10 +30,18 @@ type Props = {
   metrics: MetricRow[];
   companyFeedback: string | null;
   editable: boolean;
+  resubmit?: boolean;
   showManager: boolean;
 };
 
-export function SelfReviewForm({ reviewId, metrics, companyFeedback, editable, showManager }: Props) {
+export function SelfReviewForm({
+  reviewId,
+  metrics,
+  companyFeedback,
+  editable,
+  resubmit,
+  showManager
+}: Props) {
   const router = useRouter();
   const [rows, setRows] = useState<MetricRow[]>(metrics);
   const [feedback, setFeedback] = useState(companyFeedback ?? "");
@@ -54,6 +62,18 @@ export function SelfReviewForm({ reviewId, metrics, companyFeedback, editable, s
   }
 
   async function persist(submit: boolean) {
+    if (submit) {
+      const missingRating = rows.filter((r) => r.selfScore == null).length;
+      if (missingRating > 0) {
+        toast.error(`Please rate all metrics before submitting (${missingRating} left).`);
+        return;
+      }
+      const missingComment = rows.filter((r) => !r.selfComment?.trim()).length;
+      if (missingComment > 0) {
+        toast.error(`Please add a comment for every metric before submitting (${missingComment} left).`);
+        return;
+      }
+    }
     setPending(submit ? "submit" : "save");
     const payload: SelfScoreInput[] = rows.map((r) => ({
       metricScoreId: r.id,
@@ -104,13 +124,18 @@ export function SelfReviewForm({ reviewId, metrics, companyFeedback, editable, s
                     </div>
                   )}
                 </div>
-                <Textarea
-                  placeholder="Add a comment or evidence (optional)"
-                  value={m.selfComment ?? ""}
-                  disabled={!editable}
-                  onChange={(e) => update(m.id, { selfComment: e.target.value })}
-                  className="min-h-16"
-                />
+                <div className="space-y-1">
+                  <p className="text-muted-foreground text-xs">
+                    Comment <span className="text-destructive">*</span>
+                  </p>
+                  <Textarea
+                    placeholder="Add a comment or evidence (required)"
+                    value={m.selfComment ?? ""}
+                    disabled={!editable}
+                    onChange={(e) => update(m.id, { selfComment: e.target.value })}
+                    className="min-h-16"
+                  />
+                </div>
                 {showManager && m.managerComment && (
                   <div className="bg-muted rounded-md p-3 text-sm">
                     <span className="text-muted-foreground text-xs font-medium">
@@ -148,7 +173,7 @@ export function SelfReviewForm({ reviewId, metrics, companyFeedback, editable, s
           </Button>
           <Button onClick={() => persist(true)} disabled={pending !== null}>
             {pending === "submit" ? <Loader2 className="size-4 animate-spin" /> : <SendIcon />}
-            Submit to manager
+            {resubmit ? "Update & resubmit" : "Submit to manager"}
           </Button>
         </div>
       )}
